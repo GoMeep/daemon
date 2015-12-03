@@ -1,0 +1,19 @@
+{
+  "name": "meep-monitor",
+  "version": "1.0.0",
+  "description": "Monitoring server that dispatches or collects data on all connected servers, Writes to a MongoDB",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MeepGroup/meep-monitor"
+  },
+  "author": "wski <contact.mattdylan@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MeepGroup/meep-monitor/issues"
+  },
+  "homepage": "https://github.com/MeepGroup/meep-monitor"
+}
