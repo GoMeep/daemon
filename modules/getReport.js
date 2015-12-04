@@ -17,5 +17,4 @@ const getReport = function(callback) {
   });
 }
 
-getReport((report) => console.log(report));
 module.exports = getReport;

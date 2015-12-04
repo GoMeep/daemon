@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/MeepGroup/meep-monitor/issues"
   },
-  "homepage": "https://github.com/MeepGroup/meep-monitor"
+  "homepage": "https://github.com/MeepGroup/meep-monitor",
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "express": "^4.13.3",
+    "mongoose": "^4.2.9",
+    "request": "^2.67.0"
+  }
 }
