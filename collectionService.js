@@ -8,17 +8,19 @@ const mongoose = require('mongoose');
 
 const { authKey } = require('./hawkConfig');
 
-mongoose.connect('mongodb://localhost/test');
+mongoose.connect('mongodb://localhost/hawk');
 
-let Nest = mongoose.Schema({
+let NestSchema = mongoose.Schema({
     name: String,
     id: Number,
     instanceType: String,
+    address: String,
     cpu: Object,
     mem: Object,
     hdd: Object
 });
-let Nest = mongoose.model('Nest', Nest);
+
+let Nest = mongoose.model('Nest', NestSchema);
 
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
@@ -27,6 +29,32 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 app.get('/', function (req, res) {
   res.send('Do you belong here?'); // No routes on this url yet
+});
+
+// Prey looks up a servers info by id
+app.get('/prey/:id', function (req, res) {
+  let address = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  address = address
+    .match(/\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/g)[0];
+  
+  if(trustedAddresses.indexOf(address) > -1) {
+    let query = Nest.findOne({ 'id': req.params.id });
+    query.find(function (err, nest) {
+      if (err) return console.log(err);
+      if (nest.length > 0) {
+        res.jsonp(nest[0]);
+      }else {
+        res.status(404).jsonp({ 
+          error: "Nest not found. If you belive this is an error, please contact Matt." 
+        });
+      }
+    });
+  }else {
+    res.status(500).jsonp({ 
+      error: "Prey rejected. You are not authorized to view this link. If you belive this is an error, please contact Matt." 
+    });
+  }
+  
 });
 
 app.post('/feed', function (req, res) {
@@ -39,19 +67,35 @@ app.post('/feed', function (req, res) {
   // If they pass the correct authKey and they are on the trusted address list..
   // ..then save the newly created data to the database for later use.
   if(payload.authKey === authKey && trustedAddresses.indexOf(address) > -1) {
-    console.log(payload);
-    console.log(address);
     
     // Find a nest by IP address, if none exist, create one in the DB.
-    Nest.findOne({ 'address': address }, function (err, nest) {
+    let query = Nest.findOne({ 'address': address });
+    query.find(function (err, nest) {
       if (err) return console.log(err);
-      
-      if( nest ) {
-        console.log(nest);
-      }else {
-        nest = new Nest({
-          
+      if( nest.length > 0 ) {
+        // If a nest is found update and save it.
+        let activeNest = nest[0];
+        activeNest.cpu = payload.payload.cpu;
+        activeNest.hdd = payload.payload.hdd;
+        activeNest.mem = payload.payload.mem;
+        activeNest.save(function(err) {
+          if (err) console.log(err);
         });
+      }else {
+        // if no nest is found, create one and save it.
+        nest = new Nest({
+          cpu: payload.payload.cpu,
+          mem: payload.payload.mem,
+          hdd: payload.payload.hdd,
+          name: payload.name,
+          address: address,
+          id: payload.id,
+          instanceType: payload.instanceType
+        });
+        nest.save(function(err){
+          if (err) console.log(err);
+          console.log(`new nest created for address: ${address}`);
+        })
       }
     });
     

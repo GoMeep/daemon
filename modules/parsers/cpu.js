@@ -16,7 +16,6 @@ const cpu = function(callback) {
     });
     exec("top -bn 2 | grep -F '%Cpu' | tail -n 4 | awk '{print $2 $3}' | tr -s '\n\:\,[:alpha:]' ' '", function(err, out, code) {
       if (err instanceof Error) throw err;
-      console.log(out);
       if(!(out.indexOf("us") > -1)){
         info.usage.per_tread = out.split(' ').filter(function(e){return e});
       }

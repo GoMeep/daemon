@@ -5,7 +5,6 @@ const { masterAddr, authKey, refreshRate, id, name, instanceType } = require('./
 const getReport = require('./modules/getReport.js');
 
 const reporter = function(){
-  console.log('meep-hawk reporting service active.');
 
   getReport((payload) => {
     // Post data to master server.
@@ -17,6 +16,9 @@ const reporter = function(){
         name,
         instanceType
       }
+    },
+    function(err, httpResponse, body) {
+      if (err) console.error(err);
     });
     
     // Update database every ${refreshRate} seconds with new report.
@@ -25,5 +27,6 @@ const reporter = function(){
 };
 
 reporter();
+console.log('meep-hawk reporting service active.');
 
 
