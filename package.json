@@ -1,6 +1,6 @@
 {
-  "name": "meep-monitor",
-  "version": "1.0.0",
+  "name": "meep-hawk",
+  "version": "1.1.1",
   "description": "The hawk monitors server resources and reports them. One hawk instance is tasked with storage of this data.",
   "main": "index.js",
   "scripts": {
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/MeepGroup/meep-monitor"
+    "url": "https://github.com/MeepGroup/meep-hawk"
   },
   "author": "wski <contact.mattdylan@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/MeepGroup/meep-monitor/issues"
+    "url": "https://github.com/MeepGroup/meep-hawk/issues"
   },
-  "homepage": "https://github.com/MeepGroup/meep-monitor",
+  "homepage": "https://github.com/MeepGroup/meep-hawk",
   "dependencies": {
     "body-parser": "^1.14.1",
     "express": "^4.13.3",
