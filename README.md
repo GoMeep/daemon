@@ -25,3 +25,7 @@ and it will return the latest data from the database. (note: during early alpha 
 on the trustedConnections list can prey on any server. This will not be true during beta.
 future requests will only be aloud from the specified address, to the specified address.)
 
+## collecting
+to collect data simply have mongodb running and launch the `collectionService.js` using harmong destructuring flags.
+
+> node -harmony-destructuring collectionService.js
