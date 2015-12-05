@@ -1,7 +1,7 @@
 {
   "name": "meep-monitor",
   "version": "1.0.0",
-  "description": "Monitoring server that dispatches or collects data on all connected servers, Writes to a MongoDB",
+  "description": "The hawk monitors server resources and reports them. One hawk instance is tasked with storage of this data.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
