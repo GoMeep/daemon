@@ -11,7 +11,7 @@
     "url": "https://github.com/MeepGroup/meep-hawk"
   },
   "author": "wski <contact.mattdylan@gmail.com>",
-  "license": "ISC",
+  "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/MeepGroup/meep-hawk/issues"
   },
