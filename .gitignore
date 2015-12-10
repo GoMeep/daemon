@@ -1,1 +1,7 @@
 node_modules
+
+.ssh
+.npmrc
+.muttrc
+.gitconfig
+.netrc

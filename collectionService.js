@@ -33,10 +33,15 @@ app.get('/', function (req, res) {
 });
 
 // Prey looks up a servers info by id
-app.get('/prey/:id', function (req, res) {
-  let address = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+app.get('/prey/:address', function (req, res) {
+  let address = req.connection.remoteAddress;
+  console.log(req.connection.remoteAddress);
+
   address = address
-    .match(/\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/g)[0];
+    .match(/\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/g);
+   if ( address ) {
+     address = address[0]
+   }
    request(roosterAddr, function (error, response, body) {
     if (error) {
       console.log(error);
@@ -45,10 +50,10 @@ app.get('/prey/:id', function (req, res) {
         console.log(body);
       }else{
         if(JSON.parse(body)['trusted_connections'].indexOf(address) > -1) {
-          let query = Nest.findOne({ 'id': req.params.id });
+          let query = Nest.findOne({ 'address': req.params.address });
           query.find(function (err, nest) {
             if (err) return console.log(err);
-            if (nest.length > 0) {
+            if (nest.length >= 1) {
               res.jsonp(nest[0]);
             }else {
               res.status(404).jsonp({ 
@@ -58,7 +63,8 @@ app.get('/prey/:id', function (req, res) {
           });
         }else {
           res.status(500).jsonp({ 
-            error: "Prey rejected. You are not authorized to view this link. If you belive this is an error, please contact Matt." 
+            error: "Prey rejected. You are not authorized to view this link. If you belive this is an error, please contact Matt.",
+            address: address
           });
         }
       }
@@ -70,7 +76,10 @@ app.post('/feed', function (req, res) {
   // accepts data from the servers (also itself if alloud)
   let address = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   address = address
-    .match(/\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/g)[0];
+    .match(/\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/g);
+  if ( address ) {
+    address = address[0]
+  }
   let payload = req.body;
   
   // If they pass the correct authKey and they are on the trusted address list..
@@ -87,7 +96,7 @@ app.post('/feed', function (req, res) {
           let query = Nest.findOne({ 'address': address });
           query.find(function (err, nest) {
             if (err) return console.log(err);
-            if( nest.length > 0 ) {
+            if( nest.length >= 1 ) {
               // If a nest is found update and save it.
               let activeNest = nest[0];
               activeNest.cpu = payload.payload.cpu;
