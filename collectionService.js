@@ -32,11 +32,15 @@ app.get('/', function (req, res) {
   res.send('Do you belong here?'); // No routes on this url yet
 });
 
+app.get('/status', function(req, res) {
+  res.status(200).jsonp({
+    status: 'healthy'
+  });
+});
+
 // Prey looks up a servers info by id
 app.get('/prey/:address', function (req, res) {
-  let address = req.connection.remoteAddress;
-  console.log(req.connection.remoteAddress);
-
+  let address =  req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   address = address
     .match(/\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/g);
    if ( address ) {
@@ -48,6 +52,7 @@ app.get('/prey/:address', function (req, res) {
     } else{
       if(JSON.parse(body).error){
         console.log(body);
+        res.jsonp(JSON.parse(body));
       }else{
         if(JSON.parse(body)['trusted_connections'].indexOf(address) > -1) {
           let query = Nest.findOne({ 'address': req.params.address });
