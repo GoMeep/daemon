@@ -1,7 +1,7 @@
 'use strict';
 
 const request = require('request');
-const { masterAddr, authKey, refreshRate, id, name, instanceType } = require('./hawkConfig.js');
+const { masterAddr, authKey, refreshRate, id, name, instanceType } = require('../meepConfig.js').hawk;
 const getReport = require('./modules/getReport.js');
 
 const reporter = function(){
@@ -20,7 +20,7 @@ const reporter = function(){
     function(err, httpResponse, body) {
       if (err) console.error(err);
     });
-    
+
     // Update database every ${refreshRate} seconds with new report.
     setTimeout(reporter, refreshRate);
   });
@@ -28,5 +28,3 @@ const reporter = function(){
 
 reporter();
 console.log('meep-hawk reporting service active.');
-
-

@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const request = require('request');
 
-const { authKey, roosterAddr } = require('./hawkConfig');
+const { authKey, roosterAddr } = require('../meepConfig.js').hawk;
 
 mongoose.connect('mongodb://localhost/hawk');
 
@@ -26,7 +26,7 @@ let Nest = mongoose.model('Nest', NestSchema);
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
-})); 
+}));
 
 app.get('/', function (req, res) {
   res.send('Do you belong here?'); // No routes on this url yet
@@ -61,13 +61,13 @@ app.get('/prey/:address', function (req, res) {
             if (nest.length >= 1) {
               res.jsonp(nest[0]);
             }else {
-              res.status(404).jsonp({ 
-                error: "Nest not found. If you belive this is an error, please contact Matt." 
+              res.status(404).jsonp({
+                error: "Nest not found. If you belive this is an error, please contact Matt."
               });
             }
           });
         }else {
-          res.status(500).jsonp({ 
+          res.status(500).jsonp({
             error: "Prey rejected. You are not authorized to view this link. If you belive this is an error, please contact Matt.",
             address: address
           });
@@ -86,7 +86,7 @@ app.post('/feed', function (req, res) {
     address = address[0]
   }
   let payload = req.body;
-  
+
   // If they pass the correct authKey and they are on the trusted address list..
   // ..then save the newly created data to the database for later use.
   request(roosterAddr, function (error, response, body) {
@@ -127,19 +127,19 @@ app.post('/feed', function (req, res) {
               })
             }
           });
-          
+
           res.jsonp({
             success: true
           });
         }else {
-          res.status(500).jsonp({ 
-            error: "Payload rejected. This either means your connection address has changed or was never added to the trusted connections list." 
+          res.status(500).jsonp({
+            error: "Payload rejected. This either means your connection address has changed or was never added to the trusted connections list."
           });
         }
       }
     }
   });
-  
+
 });
 
 const server = app.listen(3000, function () {
