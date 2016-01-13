@@ -1,11 +1,11 @@
 'use strict';
 
 const request = require('request');
-const { masterAddr, authKey, refreshRate, id, name, instanceType } = require('../meepConfig.js').hawk;
+const { masterAddr, authKey, refreshRate, id, name, instanceType, myAddress } = require('../meepConfig.js').hawk;
 const getReport = require('./modules/getReport.js');
 
 const reporter = function(){
-
+  
   getReport((payload) => {
     // Post data to master server.
     request.post(masterAddr, {
@@ -14,6 +14,7 @@ const reporter = function(){
         authKey,
         id,
         name,
+        address: myAddress,
         instanceType
       }
     },
