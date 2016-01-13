@@ -79,12 +79,7 @@ app.get('/prey/:address', function (req, res) {
 
 app.post('/feed', function (req, res) {
   // accepts data from the servers (also itself if alloud)
-  let address = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  address = address
-    .match(/\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/g);
-  if ( address ) {
-    address = address[0]
-  }
+  let address = req.body.address;
   let payload = req.body;
 
   // If they pass the correct authKey and they are on the trusted address list..
