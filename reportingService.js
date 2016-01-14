@@ -1,7 +1,7 @@
 'use strict';
 
 const request = require('request');
-const { masterAddr, authKey, refreshRate, id, name, instanceType, myAddress } = require('../meepConfig.js').hawk;
+const { masterAddr, authKey, refreshRate, myAddress } = require('../meepConfig.js').hawk;
 const getReport = require('./modules/getReport.js');
 
 const reporter = function(){
