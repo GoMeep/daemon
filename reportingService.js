@@ -12,10 +12,7 @@ const reporter = function(){
       form: {
         payload,
         authKey,
-        id,
-        name,
-        address: myAddress,
-        instanceType
+        address: myAddress
       }
     },
     function(err, httpResponse, body) {
