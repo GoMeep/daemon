@@ -11,7 +11,7 @@ const reporter = function(){
     // Post data to master server.
     request.post(`${masterAddr}/nest/hawk`, {
       form: {
-        data,
+        data: payload,
         authKey,
         address: myAddress
       }
