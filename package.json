@@ -1,7 +1,7 @@
 {
-  "name": "meep-hawk",
+  "name": "meep-daemon",
   "version": "1.1.1",
-  "description": "The hawk monitors server resources and reports them. One hawk instance is tasked with storage of this data.",
+  "description": "Reporting and command executer.",
   "main": "index.js",
   "scripts": {
     "start": "node --harmony-destructuring daemon.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/MeepGroup/meep-hawk"
+    "url": "https://github.com/MeepGroup/meep-daemon"
   },
   "author": "wski <contact.mattdylan@gmail.com>",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/MeepGroup/meep-hawk/issues"
+    "url": "https://github.com/MeepGroup/meep-daemon/issues"
   },
-  "homepage": "https://github.com/MeepGroup/meep-hawk",
+  "homepage": "https://github.com/MeepGroup/meep-daemon",
   "dependencies": {
     "body-parser": "^1.14.2",
     "eslint": "^1.10.3",
