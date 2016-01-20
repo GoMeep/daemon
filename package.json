@@ -4,6 +4,7 @@
   "description": "The hawk monitors server resources and reports them. One hawk instance is tasked with storage of this data.",
   "main": "index.js",
   "scripts": {
+    "start": "node --harmony-destructuring daemon.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,9 +18,13 @@
   },
   "homepage": "https://github.com/MeepGroup/meep-hawk",
   "dependencies": {
-    "body-parser": "^1.14.1",
+    "body-parser": "^1.14.2",
+    "eslint": "^1.10.3",
     "express": "^4.13.3",
     "mongoose": "^4.2.9",
     "request": "^2.67.0"
+  },
+  "devDependencies": {
+    "eslint-config-google": "^0.3.0"
   }
 }
