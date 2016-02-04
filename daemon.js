@@ -25,7 +25,7 @@ app.use(
 );
 
 // Accept commands with authKey provided and dispatch if authKey matches locally
-app.get('/exec', function(req, res) {
+app.post('/exec', function(req, res) {
   let exec = new Promise((resolve, reject) => {
     if (req.body.authKey === authKey) {
       childProcess(req.body.command, (err, stdout, stderr) => {
@@ -35,7 +35,7 @@ app.get('/exec', function(req, res) {
           reject(500, stderr);
         } else {
           resolve(200, {
-            message: 'Successfully dispatched command',
+            message: `Successfully dispatched command ${req.body.command}`,
             output: stdout
           });
         }
@@ -48,8 +48,8 @@ app.get('/exec', function(req, res) {
   });
 
   exec
-    .then(response => {
-      res.status(200).jsonp(response);
+    .then((status, response) => {
+      res.status(status).jsonp(response);
     })
     .catch((status, err) => {
       res.status(status).jsonp(err);
