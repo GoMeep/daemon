@@ -30,9 +30,9 @@ app.post('/exec', function(req, res) {
     if (req.body.authKey === authKey) {
       childProcess(req.body.command, (err, stdout, stderr) => {
         if (err) {
-          reject(500, err);
+          resolve(500, err);
         } else if (stderr) {
-          reject(500, stderr);
+          resolve(500, stderr);
         } else {
           resolve(200, {
             message: `Successfully dispatched command ${req.body.command}`,
@@ -41,7 +41,7 @@ app.post('/exec', function(req, res) {
         }
       });
     } else {
-      reject(401, {
+      resolve(401, {
         error: 'You are unauthorized to issue commands on this nest.'
       });
     }
@@ -50,10 +50,19 @@ app.post('/exec', function(req, res) {
   exec
     .then((status, response) => {
       res.status(status).jsonp(response);
-    })
-    .catch((status, err) => {
-      res.status(status).jsonp(err);
     });
+});
+
+app.post('/spawn', funciton(req, res) {
+  let spawn = function createInstance(){
+    return new Promise((resolve, reject) => {
+
+    });
+  };
+
+  spawn.then((status, response) => {
+    res.status(status).jsonp(response);
+  });
 });
 
 app.listen(3000, function() {

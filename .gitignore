@@ -5,3 +5,7 @@ node_modules
 .muttrc
 .gitconfig
 .netrc
+.DS_Store
+
+modules/minecraft
+modules/test.js
