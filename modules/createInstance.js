@@ -1,23 +1,46 @@
+'use strict';
 
 const Instance = require('./instance');
 
-// Perhapse put this in a flatfile db to prevent loss on crash of daemon
-let instances = {};
-
-let spawn = function createInstance(options) {
+let spawn = function createInstance(options, instances, callback) {
   return new Promise((resolve, reject) => {
     // check to make sure it doesn't already exist in the instances array.
-    instances[options.instanceName] = new Instance({
-      dir: (options.dir) ? options.dir : false,
-      startCommand: options.startCommand,
-      startOptions: (options.startOptions) ? options.startOptions : false,
-      stopCommand: (options.stopCommand) ? options.stopCommand : false,
-      out: data => {
-        // report data to the API or something here.
-        console.log(data.data);
-      }
-    });
+    if (options.startCommand) {
+      instances[options.instanceName] = new Instance({
+        dir: (options.dir) ? options.dir : false,
+        startCommand: options.startCommand,
+        startOptions: (options.startOptions) ? options.startOptions : false,
+        stopCommand: (options.stopCommand) ? options.stopCommand : false,
+        out: data => {
+          if (instances[options.instanceName].consoleOutput) {
+            instances[options.instanceName].consoleOutput.push(data.data);
+            callback(instances);
+          } else {
+            instances[options.instanceName].consoleOutput = [data.data];
+            callback(instances);
+          }
 
+          if (data.code === 0) {
+            reject({
+              data: data.data,
+              status: 500
+            });
+          } else {
+            resolve({
+              data: 'New instance has been started.',
+              status: 200
+            });
+          }
+        }
+      }).start();
+
+      callback(instances);
+    } else {
+      reject({
+        data: 'Missing start command.',
+        status: 500
+      });
+    }
   });
 };
 

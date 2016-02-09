@@ -30,23 +30,35 @@ class Instance {
       {
         cwd: this.dir
       }
-    );
+    ).on('error', err => {
+      this.out({
+        data: err,
+        code: 0
+      });
+    });
 
-    console.log(`cd ${this.dir} && ${this.startCommand}`);
     this.server.stdout.setEncoding('utf8');
 
     this.server.stdout.on('data', data => {
-      this.output(data);
+      this.out({
+        data: data,
+        code: 1
+      });
     });
 
     this.server.stderr.on('data', data => {
-      this.output(data);
+      this.out({
+        data: data,
+        code: 1
+      });
     });
 
     this.server.on('close', code => {
       this.connectionClosed = true;
       this.done(code);
     });
+
+    return this;
   }
 
   command(command) {
@@ -61,29 +73,24 @@ class Instance {
     }
   }
 
-  output(data) {
-    this.out({
-      data: data,
-      code: 1
-    });
-  }
-
   stop() {
     // Halt the server, if it has a shutdown command, use it. If the command
     // fails to shutdown the server after 15s halt it by killing it.
-    if (this.stopCommand) {
-      this.command(this.stopCommand);
-      setTimeout(() => {
-        if (!this.closed) {
-          this.output({
-            data: 'Failed to stop with stop command after 15s, force killing.',
-            code: 1
-          });
-          this.server.kill();
-        }
-      }, 15000);
-    } else {
-      this.server.kill();
+    if (!this.closed) {
+      if (this.stopCommand) {
+        this.command(this.stopCommand);
+        setTimeout(() => {
+          if (!this.closed) {
+            this.out({
+              data: 'Failed to stop with stop command after 15s, force killing.',
+              code: 1
+            });
+            this.server.kill();
+          }
+        }, 15000);
+      } else {
+        this.server.kill();
+      }  
     }
   }
 
