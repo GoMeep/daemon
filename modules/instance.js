@@ -18,47 +18,7 @@ class Instance {
     this.out = (options.out) ? options.out : noop;
 
     this.server = null;
-    this.closed = false;
-  }
-
-  start() {
-    // Spawn a new instance with the option to execute a file from a directory
-    // report output, errors and close.
-    this.server = spawn(
-      this.startCommand,
-      this.startOptions,
-      {
-        cwd: this.dir
-      }
-    ).on('error', err => {
-      this.out({
-        data: err,
-        code: 0
-      });
-    });
-
-    this.server.stdout.setEncoding('utf8');
-
-    this.server.stdout.on('data', data => {
-      this.out({
-        data: data,
-        code: 1
-      });
-    });
-
-    this.server.stderr.on('data', data => {
-      this.out({
-        data: data,
-        code: 1
-      });
-    });
-
-    this.server.on('close', code => {
-      this.connectionClosed = true;
-      this.done(code);
-    });
-
-    return this;
+    this.closed = true;
   }
 
   command(command) {
@@ -73,7 +33,56 @@ class Instance {
     }
   }
 
-  stop() {
+  start() {
+    // Spawn a new instance with the option to execute a file from a directory
+    // report output, errors and close.
+    if (this.closed) {
+      this.closed = false;
+
+      this.server = spawn(
+        this.startCommand,
+        this.startOptions,
+        {
+          cwd: this.dir
+        }
+      ).on('error', err => {
+        this.out({
+          data: err,
+          code: 0
+        });
+      });
+
+      this.server.stdout.setEncoding('utf8');
+
+      this.server.stdout.on('data', data => {
+        this.out({
+          data: data,
+          code: 1
+        });
+      });
+
+      this.server.stderr.on('data', data => {
+        this.out({
+          data: data,
+          code: 1
+        });
+      });
+
+      this.server.on('close', code => {
+        this.connectionClosed = true;
+        this.done(code);
+      });
+    } else {
+      this.out({
+        data: `Cannot start instance, instance already running.`,
+        code: 1
+      });
+    }
+
+    return this;
+  }
+
+  stop(next) {
     // Halt the server, if it has a shutdown command, use it. If the command
     // fails to shutdown the server after 15s halt it by killing it.
     if (!this.closed) {
@@ -86,12 +95,24 @@ class Instance {
               code: 1
             });
             this.server.kill();
+            if (next) {
+              next();
+            }
           }
         }, 15000);
       } else {
         this.server.kill();
-      }  
+        if (next) {
+          next();
+        }
+      }
     }
+  }
+
+  restart() {
+    this.stop(() => {
+      this.start();
+    });
   }
 
   done(code) {

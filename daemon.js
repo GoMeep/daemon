@@ -106,6 +106,7 @@ app.post('/spawn', function(req, res) {
   }
 });
 
+// Should only be used if you do not plan to restart the server.
 app.post('/despawn', function(req, res) {
   let options = req.body;
   if (options.authKey === authKey) {
@@ -127,6 +128,42 @@ app.post('/despawn', function(req, res) {
   }
 });
 
+app.post('/cycle', function(req, res) {
+  let options = req.body;
+  if (options.authKey === authKey) {
+    if (instances[options.instanceName]) {
+      if (options.cycle === 'stop') {
+        instances[options.instanceName].stop();
+        res.status(200).jsonp({
+          success: 'started shutdown procedure'
+        });
+      } else if (options.cycle === 'start') {
+        instances[options.instanceName].start();
+        res.status(200).jsonp({
+          success: 'started start procedure'
+        });
+      } else if (options.cycle === 'restart') {
+        instances[options.instanceName].restart();
+        res.status(200).jsonp({
+          success: 'started restart procedure'
+        });
+      } else {
+        res.status(404).jsonp({
+          success: `unknown procedure ${options.procedure}`
+        });
+      }
+    } else {
+      res.status(404).jsonp({
+        success: `unknown instance provided, ${options.instanceName}`
+      });
+    }
+  } else {
+    res.status(401).jsonp({
+      error: 'unauthorized to cycle, invalid authKey'
+    });
+  }
+});
+
 app.post('/instance', function(req, res) {
   let options = req.body;
   if (options.authKey === authKey) {
@@ -144,11 +181,10 @@ app.post('/instance', function(req, res) {
     }
   } else {
     res.status(401).jsonp({
-      error: 'unauthorized to despawn, invalid authKey'
+      error: 'unauthorized to view instance, invalid authKey'
     });
   }
 });
-
 
 app.listen(3000, function() {
   console.log('Daemon listening on http://localhost:3000');
