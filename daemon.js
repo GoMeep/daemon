@@ -48,7 +48,7 @@ app.post('/exec', function(req, res) {
       });
     }
   } else {
-    let exec = new Promise((resolve, reject) => {
+    let exec = new Promise(resolve => {
       if (req.body.authKey === authKey) {
         childProcess(req.body.command, (err, stdout, stderr) => {
           if (err) {

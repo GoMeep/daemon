@@ -23,7 +23,7 @@ class Instance {
 
   command(command) {
     // Issue command by writing to stdin unless the instance is not active.
-    if (this.server.closed) {
+    if (this.closed) {
       this.out({
         data: `Tried to execute ${command} on a closed instance.`,
         code: 1
@@ -91,7 +91,7 @@ class Instance {
         setTimeout(() => {
           if (!this.closed) {
             this.out({
-              data: 'Failed to stop with stop command after 15s, force killing.',
+              data: 'Failed to stop with command after 15s, force killing.',
               code: 1
             });
             this.server.kill();
