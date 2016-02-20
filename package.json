@@ -19,6 +19,7 @@
   "homepage": "https://github.com/MeepGroup/meep-daemon",
   "dependencies": {
     "body-parser": "^1.14.2",
+    "cpu-stats": "^1.0.0",
     "eslint": "^1.10.3",
     "express": "^4.13.3",
     "mongoose": "^4.2.9",

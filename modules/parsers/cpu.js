@@ -1,10 +1,20 @@
 const exec = require('child_process').exec;
+const cpuStats = require('cpu-stats');
 
 // works off the response of 'lscpu'
 const cpu = function(callback) {
   var info = {
     usage: {}
   };
+
+  cpuStats(1000, function(error, result) {
+    if (error) {
+      return console.error(error);
+    }
+
+    info.perCore = result;
+  });
+
   exec('lscpu', function(err, out, code) {
     if (err instanceof Error) throw err;
 
