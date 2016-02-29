@@ -190,7 +190,7 @@ app.post('/instances', function(req, res) {
   let options = req.body;
   if (options.authKey === authKey) {
     res.status(200).jsonp({
-      success: Object.assign({}, instances)
+      success: Object.keys(instances)
     });
   } else {
     res.status(401).jsonp({
