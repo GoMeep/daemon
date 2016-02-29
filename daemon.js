@@ -186,6 +186,19 @@ app.post('/instance', function(req, res) {
   }
 });
 
+app.post('/instances', function(req, res) {
+  let options = req.body;
+  if (options.authKey === authKey) {
+    res.status(200).jsonp({
+      success: instances
+    });
+  } else {
+    res.status(401).jsonp({
+      error: 'unauthorized to view instance, invalid authKey'
+    });
+  }
+});
+
 app.listen(3000, function() {
   console.log('Daemon listening on http://localhost:3000');
 });
