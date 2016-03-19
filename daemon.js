@@ -218,7 +218,7 @@ const reporter = function() {
         console.error(err);
         console.warn(body);
       } else {
-        setTimeout(reporter, 5000);
+        setTimeout(reporter, 500);
       }
     });
   });
