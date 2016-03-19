@@ -9,7 +9,7 @@ let spawn = function createInstance(options, instances, callback) {
       instances[options.instanceName] = new Instance({
         dir: (options.dir) ? options.dir : false,
         yolkName: options.yolkName,
-        yolkVersion: opyions.yolkVersion
+        yolkVersion: opyions.yolkVersion,
         startCommand: options.startCommand,
         startOptions: (options.startOptions) ? options.startOptions : false,
         stopCommand: (options.stopCommand) ? options.stopCommand : false,
