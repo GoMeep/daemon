@@ -17,8 +17,6 @@ class Instance {
     // Pipe output to noop if not supplied by constructor
     this.out = (options.out) ? options.out : noop;
   
-    this.yolkName = options.yolkName;
-    this.yolkVersion = options.yolkVersion;
     this.server = null;
     this.closed = true;
   }
