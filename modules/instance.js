@@ -16,7 +16,8 @@ class Instance {
     this.stopCommand = (options.stopCommand) ? options.stopCommand : false;
     // Pipe output to noop if not supplied by constructor
     this.out = (options.out) ? options.out : noop;
-
+  
+    this.yolk = null;
     this.server = null;
     this.closed = true;
   }
