@@ -8,8 +8,6 @@ let spawn = function createInstance(options, instances, callback) {
     if (options.startCommand) {
       instances[options.instanceName] = new Instance({
         dir: (options.dir) ? options.dir : false,
-        yolkName: options.yolkName,
-        yolkVersion: opyions.yolkVersion,
         startCommand: options.startCommand,
         startOptions: (options.startOptions) ? options.startOptions : false,
         stopCommand: (options.stopCommand) ? options.stopCommand : false,
