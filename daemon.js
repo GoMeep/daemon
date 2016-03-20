@@ -139,7 +139,7 @@ DB.subscribe((data) => {
 
 app.post('/cron/make', function(req, res) {
   if (req.body.authKey === authKey) {
-    let tasks = DB.seek({_id: 'Task', uuid: (req.body.uuid) ? req.body.uuid : false});
+    let tasks = DB.seek({_id: 'Task', _rev: (req.body.uuid) ? req.body.uuid : false});
     if (tasks.length) {
       // modify
       DB.put({
