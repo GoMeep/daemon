@@ -128,6 +128,53 @@ app.post('/despawn', function(req, res) {
   }
 });
 
+const uuid = require('uuid');
+const CronJob = require('cron').CronJob;
+
+const Teensy = require('teensy');
+const DB = new Teensy('teensy.db', 1000).store();
+
+app.post('/cron/make', function(req, res) {
+  DB.subscribe((data) => {
+    console.log('cron updated');
+  }, 'OG');
+
+  let tasks = DB.seek({_id: 'Task', uuid: (req.body.uuid) ? req.body.uuid : false});
+  if (tasks.length) {
+    // modify
+    DB.put({
+      _id: 'Task',
+      _rev: 1,
+      uuid: req.body.uuid,
+      command: req.body.command,
+      cron: req.body.cron,
+      instance: req.body.instance,
+      lastModified: Date.now()
+    });
+
+    req.status(200).jsonp({
+      success: 'Sucessfully updated task with uuid ' + req.body.uuid
+    });
+  } else {
+    // create
+    let newuuid = uuid.v1();
+
+    DB.put({
+      _id: 'Task',
+      _rev: 1,
+      uuid: newuuid,
+      command: req.body.command,
+      cron: req.body.cron,
+      instance: req.body.instance,
+      lastModified: Date.now()
+    });
+
+    req.status(200).jsonp({
+      success: 'Sucessfully added task with uuid ' + newuuid
+    });
+  }
+});
+
 app.post('/cycle', function(req, res) {
   let options = req.body;
   if (options.authKey === authKey) {
