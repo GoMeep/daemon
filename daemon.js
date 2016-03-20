@@ -144,8 +144,7 @@ app.post('/cron/make', function(req, res) {
       // modify
       DB.put({
         _id: 'Task',
-        _rev: 1,
-        uuid: req.body.uuid,
+        _rev: req.body.uuid,
         command: req.body.command,
         cron: req.body.cron,
         instance: req.body.instance,
@@ -161,8 +160,7 @@ app.post('/cron/make', function(req, res) {
 
       DB.put({
         _id: 'Task',
-        _rev: 1,
-        uuid: newuuid,
+        _rev: newuuid,
         command: req.body.command,
         cron: req.body.cron,
         instance: req.body.instance,
