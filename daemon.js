@@ -133,44 +133,49 @@ const CronJob = require('cron').CronJob;
 
 const Teensy = require('teensy');
 const DB = new Teensy('teensy.db', 1000).store();
+DB.subscribe((data) => {
+  console.log('cron updated');
+}, 'OG');
 
 app.post('/cron/make', function(req, res) {
-  DB.subscribe((data) => {
-    console.log('cron updated');
-  }, 'OG');
+  if (req.body.authKey === authKey) {
+    let tasks = DB.seek({_id: 'Task', uuid: (req.body.uuid) ? req.body.uuid : false});
+    if (tasks.length) {
+      // modify
+      DB.put({
+        _id: 'Task',
+        _rev: 1,
+        uuid: req.body.uuid,
+        command: req.body.command,
+        cron: req.body.cron,
+        instance: req.body.instance,
+        lastModified: Date.now()
+      });
 
-  let tasks = DB.seek({_id: 'Task', uuid: (req.body.uuid) ? req.body.uuid : false});
-  if (tasks.length) {
-    // modify
-    DB.put({
-      _id: 'Task',
-      _rev: 1,
-      uuid: req.body.uuid,
-      command: req.body.command,
-      cron: req.body.cron,
-      instance: req.body.instance,
-      lastModified: Date.now()
-    });
+      req.status(200).jsonp({
+        success: 'Sucessfully updated task with uuid ' + req.body.uuid
+      });
+    } else {
+      // create
+      let newuuid = uuid.v1();
 
-    req.status(200).jsonp({
-      success: 'Sucessfully updated task with uuid ' + req.body.uuid
-    });
+      DB.put({
+        _id: 'Task',
+        _rev: 1,
+        uuid: newuuid,
+        command: req.body.command,
+        cron: req.body.cron,
+        instance: req.body.instance,
+        lastModified: Date.now()
+      });
+
+      req.status(200).jsonp({
+        success: 'Sucessfully added task with uuid ' + newuuid
+      });
+    }
   } else {
-    // create
-    let newuuid = uuid.v1();
-
-    DB.put({
-      _id: 'Task',
-      _rev: 1,
-      uuid: newuuid,
-      command: req.body.command,
-      cron: req.body.cron,
-      instance: req.body.instance,
-      lastModified: Date.now()
-    });
-
-    req.status(200).jsonp({
-      success: 'Sucessfully added task with uuid ' + newuuid
+    res.status(401).jsonp({
+      error: 'unauthorized to despawn, invalid authKey'
     });
   }
 });
