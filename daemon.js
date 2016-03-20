@@ -152,7 +152,7 @@ app.post('/cron/make', function(req, res) {
         lastModified: Date.now()
       });
 
-      req.status(200).jsonp({
+      res.status(200).jsonp({
         success: 'Sucessfully updated task with uuid ' + req.body.uuid
       });
     } else {
@@ -169,7 +169,7 @@ app.post('/cron/make', function(req, res) {
         lastModified: Date.now()
       });
 
-      req.status(200).jsonp({
+      res.status(200).jsonp({
         success: 'Sucessfully added task with uuid ' + newuuid
       });
     }
